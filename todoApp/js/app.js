@@ -33,5 +33,24 @@ todosApp.controller('TodoListController', function ( $scope, $http ) {
     return todo;
   }
 
+  $scope.deleteTodos = function(todo) {
+    $http.get("http://localhost/todoApp/database.php?action=delete&id="+todo.id)
+    .success( function ( data ) {
+        $scope.getTodos();
+        $scope.addtodoitem = '';
+      });
+    return todo;
+  }
+
+  $scope.hideCompleted = function () {
+    $http.get("http://localhost/todoApp/database.php?action=select&status=hideCompleted")
+        .success(function(response) {$scope.todos = response;});
+  };
+
+  $scope.showCompleted = function () {
+    $http.get("http://localhost/todoApp/database.php?action=select&status=showCompleted")
+        .success(function(response) {$scope.todos = response;});
+  };
+
   $scope.getTodos();
 });

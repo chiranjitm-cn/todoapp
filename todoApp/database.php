@@ -9,9 +9,24 @@ switch ( $_REQUEST['action'] ) {
 	case 'update' :
 		update_todo();
 		break;
+	case 'delete' :
+		delete_todo();
+		break;
 	default :
 		echo 'Nothing to see here!';
 	die();
+}
+
+function get_todolist(){
+	$status = isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : null;
+	$is_done = ( 'hideCompleted' == $status ) ? 'false' : 'true';
+	if( isset( $_REQUEST['status'] ) ){
+		$sql = "SELECT * FROM todo_list WHERE is_done='{$is_done}' ORDER BY item_order ASC";
+	} else {
+		$sql = "SELECT * FROM todo_list ORDER BY item_order ASC";
+	}
+	$result = todo_database_query( $sql , 'select');
+	todo_json_response( $result );
 }
 
 function add_todo() {
@@ -29,8 +44,9 @@ function update_todo() {
 	todo_json_response( $result );
 }
 
-function get_todolist(){
-	$sql = "SELECT * FROM todo_list";
+function delete_todo(){
+	$itemid = isset( $_REQUEST['id'] ) ? $_REQUEST['id'] : null;
+	$sql = "DELETE FROM todo_list WHERE id={$itemid}";
 	$result = todo_database_query( $sql , 'select');
 	todo_json_response( $result );
 }
